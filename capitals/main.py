@@ -27,7 +27,7 @@ def capital_status():
     status['insert'] = 'true'
     status['fetch'] = 'true'
     status['delete'] = 'true'
-    status['list'] = 'false'
+    status['list'] = 'true'
     return json.dumps(status)
 
 @app.route('/api/capitals/<id>', methods=['DELETE', 'PUT', 'GET' ])
@@ -75,9 +75,7 @@ def list_capitals():
 
     a_capital = capital.Capital()
     results = a_capital.fetch()
-    #result = [notebook.parse_note_time(obj) for obj in results]
-    #return jsonify(result)
-    return
+    return jsonify(results)
 
 @app.errorhandler(500)
 def server_error(err):
