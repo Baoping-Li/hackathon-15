@@ -2,7 +2,8 @@
 runtime: python27
 api_version: 1
 threadsafe: true
-service: capitals-service
+service: capital-service
+
 
 handlers:
 - url: /.*
