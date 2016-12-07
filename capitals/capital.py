@@ -16,14 +16,15 @@ class Capital:
         json_capital['countryCode'] = capital['countryCode']
         json_capital['country'] = capital['country']
         json_capital['location'] = {}
-        json_capital['location']['latitude'] = capital['latitude']
-        json_capital['location']['longitude'] = capital['longitude']
+        json_capital['location']['latitude'] = "@" + str(capital['latitude']) + "@"
+        json_capital['location']['longitude'] = "@" + str(capital['longitude']) + "@"
         json_capital['continent'] = capital['continent']
         return json_capital
 
-    def store(self, capital):
+    def store(self, capital, capital_id):
 
         print capital
+        capital['id'] = int(capital_id)
         key = self.ds.key(self.kind, capital['id'])
 
         print key
