@@ -30,10 +30,25 @@ class Capital:
 
         return self.ds.put(entity)
 
-    def fetch_notes(self):
+    def fetch(self):
         query = self.ds.query(kind=self.kind)
-        query.order = ['-timestamp']
+        #query.order = ['-timestamp']
         return self.get_query_results(query)
+
+    def get(self, capital_id):
+        key = self.ds.key(self.kind, int(capital_id))
+        capital = self.ds.get(key)
+        print capital
+        print 'something'
+        json_capital = {}
+        json_capital['name'] = capital['name']
+        json_capital['countryCode'] = capital['countryCode']
+        json_capital['country'] = capital['country']
+        json_capital['location'] = {}
+        json_capital['location']['latitude'] = capital['latitude']
+        json_capital['location']['longitude'] = capital['longitude']
+        json_capital['continent'] = capital['continent']
+        return json_capital
 
     def get_query_results(self, query):
         results = list()

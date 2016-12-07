@@ -25,7 +25,7 @@ def hello_world():
 def capital_status():
     status = {}
     status['insert'] = 'true'
-    status['fetch'] = 'false'
+    status['fetch'] = 'true'
     status['delete'] = 'false'
     status['list'] = 'false'
     return json.dumps(status)
@@ -44,7 +44,7 @@ def capital_operations(id):
         print json.dumps(request.get_json()['id'])
         a_capital.store(request.get_json())
 
-        return "done", 200
+        return None, 200
         
       elif request.method == 'DELETE':
         a_capital = capital.Capital()
@@ -57,10 +57,10 @@ def capital_operations(id):
         a_capital = capital.Capital()
         json_capital = a_capital.get(id)
 
-        if not json_capital:
-          return '{ "code": 404, "message": "Capital not found" }', 404
+        #if not json_capital:
+        #  return '{ "code": 404, "message": "Capital not found" }', 404
 
-        return json_capital, 200
+        return json.dumps(json_capital), 200
 
     except Exception as e:
         # swallow up exceptions
@@ -69,21 +69,15 @@ def capital_operations(id):
     return "Unexpected error", 500
 
 
-@app.route('/api/capitals', methods=['GET' ])
+@app.route('/api/capitals', methods=['GET'])
 def list_capitals():
     """list capitals"""
 
-    book = notebook.NoteBook()
-    if request.method == 'GET':
-        results = book.fetch_notes()
-        result = [notebook.parse_note_time(obj) for obj in results]
-        return jsonify(result)
-    elif request.method == 'POST':
-        print json.dumps(request.get_json())
-        l = request.get_json()['l']
-        book.store_note(l)
-        return "done"
-
+    a_capital = capital.Capital()
+    results = a_capital.fetch()
+    #result = [notebook.parse_note_time(obj) for obj in results]
+    #return jsonify(result)
+    return
 
 @app.errorhandler(500)
 def server_error(err):
