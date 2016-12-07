@@ -24,10 +24,10 @@ def hello_world():
 @app.route('/api/status', methods=['GET' ])
 def capital_status():
     status = {}
-    status['insert'] = 'true'
-    status['fetch'] = 'true'
-    status['delete'] = 'true'
-    status['list'] = 'true'
+    status['insert'] = True
+    status['fetch'] = True
+    status['delete'] = True
+    status['list'] = True
     return json.dumps(status)
 
 @app.route('/api/capitals/<id>', methods=['DELETE', 'PUT', 'GET' ])
@@ -44,13 +44,13 @@ def capital_operations(id):
         print json.dumps(request.get_json()['id'])
         a_capital.store(request.get_json())
 
-        return None, 200
+        return '', 200
         
       elif request.method == 'DELETE':
         a_capital = capital.Capital()
         a_capital.delete(id)
 
-        return None, 200
+        return '', 200
 
       elif request.method == "GET":    
 
@@ -59,8 +59,7 @@ def capital_operations(id):
         
         if not json_capital:
           return '{ "code": 404, "message": "Capital not found" }', 404
-
-        return json.dumps(json_capital), 200
+        return jsonify(json_capital), 200
 
     except Exception as e:
         # swallow up exceptions
