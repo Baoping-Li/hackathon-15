@@ -35,12 +35,17 @@ class Capital:
         #query.order = ['-timestamp']
         return self.get_query_results(query)
 
+    def delete(self, capital_id):
+        key = self.ds.key(self.kind, int(capital_id))
+        capital = self.ds.delete(key)
+
     def get(self, capital_id):
         key = self.ds.key(self.kind, int(capital_id))
         capital = self.ds.get(key)
-        print capital
-        print 'something'
+        if not capital:
+            return None
         json_capital = {}
+        json_capital['id'] = capital_id
         json_capital['name'] = capital['name']
         json_capital['countryCode'] = capital['countryCode']
         json_capital['country'] = capital['country']

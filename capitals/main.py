@@ -26,7 +26,7 @@ def capital_status():
     status = {}
     status['insert'] = 'true'
     status['fetch'] = 'true'
-    status['delete'] = 'false'
+    status['delete'] = 'true'
     status['list'] = 'false'
     return json.dumps(status)
 
@@ -50,15 +50,15 @@ def capital_operations(id):
         a_capital = capital.Capital()
         a_capital.delete(id)
 
-        return "done", 200
+        return None, 200
 
       elif request.method == "GET":    
 
         a_capital = capital.Capital()
         json_capital = a_capital.get(id)
-
-        #if not json_capital:
-        #  return '{ "code": 404, "message": "Capital not found" }', 404
+        
+        if not json_capital:
+          return '{ "code": 404, "message": "Capital not found" }', 404
 
         return json.dumps(json_capital), 200
 
