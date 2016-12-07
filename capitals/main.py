@@ -44,7 +44,7 @@ def capital_operations(id):
         print json.dumps(request.get_json()['id'])
         a_capital.store(request.get_json())
 
-        return "done", 200
+        return "", 200
         
       elif request.method == 'DELETE':
         a_capital = capital.Capital()
