@@ -9,12 +9,24 @@ class Capital:
         self.ds = datastore.Client(project=utility.project_id())
         self.kind = "Capitals"
 
-    def store_note(self, comment):
-        key = self.ds.key(self.kind)
+    def store(self, capital):
+
+        print capital
+        key = self.ds.key(self.kind, capital['id'])
+
+
+#        key = capital['id']
+#        entity = datastore.Entity(key)
+
+        print key
         entity = datastore.Entity(key)
 
-        entity['text'] = comment
-        entity['timestamp'] = datetime.utcnow()
+        entity['name'] = capital['name']
+        entity['countryCode'] = capital['countryCode']
+        entity['country'] = capital['country']
+        entity['latitude'] = capital['location']['latitude']
+        entity['longitude'] = capital['location']['longitude']
+        entity['continent'] = capital['continent']
 
         return self.ds.put(entity)
 

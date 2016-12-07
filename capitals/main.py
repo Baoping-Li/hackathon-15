@@ -18,32 +18,55 @@ app = Flask(__name__)
 def hello_world():
     """hello world"""
     return 'Hello World!'
+
+
+
 @app.route('/api/status', methods=['GET' ])
 def capital_status():
     status = {}
-    status['insert'] = 'false'
+    status['insert'] = 'true'
     status['fetch'] = 'false'
     status['delete'] = 'false'
     status['list'] = 'false'
     return json.dumps(status)
 
 @app.route('/api/capitals/<id>', methods=['DELETE', 'PUT', 'GET' ])
-def capital_operations():
+def capital_operations(id):
     """handle capitals requests"""
 
     data = {}
     try:
-        obj = request.get_json()
-        utility.log_info(json.dumps(obj))
+      if request.method == 'PUT':
+        print json.dumps(request.get_json())
 
-        data = base64.b64decode(obj['message']['data'])
-        utility.log_info(data)
+        a_capital = capital.Capital()
+
+        print json.dumps(request.get_json()['id'])
+        a_capital.store(request.get_json())
+
+        return "done", 200
+        
+      elif request.method == 'DELETE':
+        a_capital = capital.Capital()
+        a_capital.delete(id)
+
+        return "done", 200
+
+      elif request.method == "GET":    
+
+        a_capital = capital.Capital()
+        json_capital = a_capital.get(id)
+
+        if not json_capital:
+          return '{ "code": 404, "message": "Capital not found" }', 404
+
+        return json_capital, 200
 
     except Exception as e:
         # swallow up exceptions
         logging.exception('Oops!')
 
-    return jsonify(data), 200
+    return "Unexpected error", 500
 
 
 @app.route('/api/capitals', methods=['GET' ])
@@ -57,8 +80,8 @@ def list_capitals():
         return jsonify(result)
     elif request.method == 'POST':
         print json.dumps(request.get_json())
-        text = request.get_json()['text']
-        book.store_note(text)
+        l = request.get_json()['l']
+        book.store_note(l)
         return "done"
 
 
