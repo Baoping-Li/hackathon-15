@@ -60,7 +60,7 @@ def capital_operations(id):
         if not json_capital:
           return '{ "code": 404, "message": "Capital not found" }', 404
         #return jsonify(json_capital), 200
-        return json.dumps(json_capital).replace('@"','').replace('"@',''), 200
+        return json.dumps(json_capital), 200
 
     except Exception as e:
         # swallow up exceptions

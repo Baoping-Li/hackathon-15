@@ -16,8 +16,8 @@ class Capital:
         json_capital['countryCode'] = capital['countryCode']
         json_capital['country'] = capital['country']
         json_capital['location'] = {}
-        json_capital['location']['latitude'] = "@" + str(capital['latitude']) + "@"
-        json_capital['location']['longitude'] = "@" + str(capital['longitude']) + "@"
+        json_capital['location']['latitude'] = capital['latitude']
+        json_capital['location']['longitude'] = capital['longitude']
         json_capital['continent'] = capital['continent']
         return json_capital
 
