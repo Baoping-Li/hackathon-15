@@ -28,9 +28,9 @@ def capital_status():
     status['fetch'] = True
     status['delete'] = True
     status['list'] = True
-    status['query'] = False
-    status['search'] = False
-    status['pubsub'] = False
+    status['query'] = True
+    status['search'] = True
+    status['pubsub'] = True
     status['storage'] = True
     return json.dumps(status)
 
@@ -78,7 +78,23 @@ def list_capitals():
 
     a_capital = capital.Capital()
     results = a_capital.fetch()
-    return jsonify(results)
+    search = request.args.get('search')
+    query = request.args.get('query')
+    if search:
+        found = []
+        for capital_data in results:
+            if search in json.dumps(capital_data):
+                found.append(capital_data)
+        return jsonify(found), 200
+    elif query:
+        found = []
+        query_items = query.split(':')
+        for capital_data in results:
+            if capital_data[query_items[0]] == query_items[1]:
+                found.append(capital_data)
+        return jsonify(found), 200
+
+    return jsonify(results), 200
 
 @app.route('/api/capitals/<id>/store', methods=['POST']) 
 def store_capital(id):
@@ -96,6 +112,28 @@ def store_capital(id):
     print capital_data
     a_capital.cloud_store(bucket, capital_data)
     return '', 200
+
+@app.route('/api/capitals/<id>/publish', methods=['POST']) 
+def publish_capital(id):
+    """publish capitals"""
+    try:
+        topic = request.get_json()['topic']
+        print topic
+        if not topic:
+            return '{ "code": 500, "message": "Bad request" }', 500
+        a_capital = capital.Capital()
+        capital_data = a_capital.get(id)
+        if not capital_data:
+            return '{ "code": 404, "message": "Capital not found" }', 404
+        print capital_data
+        a_capital.publish(topic, capital_data)
+        return '', 200
+    except Exception as e:
+        # swallow up exceptions
+        logging.exception('Oops!')
+        print e
+
+    return "Unexpected error", 500
 
 @app.errorhandler(500)
 def server_error(err):

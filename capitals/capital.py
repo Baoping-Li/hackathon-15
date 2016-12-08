@@ -2,6 +2,7 @@ from datetime import datetime
 from google.cloud import datastore
 from google.cloud import storage, exceptions
 from google.cloud.storage import Blob
+from google.cloud import pubsub
 import json
 import utility
 
@@ -60,10 +61,24 @@ class Capital:
         capital['id'] = capital_id
         return self.to_dto(capital)
 
+    def get_query_results(self, query):
+        results = list()
+        for entity in list(query.fetch()):
+            results.append(self.to_dto(entity))
+        return results
+
     def cloud_store(self, bucket_name, capital_data):
         bucket = self.gcs.get_bucket(bucket_name)
         blob = Blob(capital_data['id'], bucket)
         blob.upload_from_string(json.dumps(capital_data), content_type='application/json')
+
+
+    def publish(self, topic_name, capital_data):
+        pubsub_client = pubsub.Client()
+        topic = pubsub_client.topic(topic_name)
+        data = json.dumps(capital_data).encode('utf-8')
+        message_id = topic.publish(data)
+        print('Message {} published.'.format(message_id))
 
 def parse_note_time(note):
     """converts a greeting to an object"""
