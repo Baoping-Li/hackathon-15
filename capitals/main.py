@@ -98,6 +98,14 @@ def list_capitals():
     results = a_capital.fetch(20)
     return jsonify(results), 200
 
+@app.route('/api/capitals/all', methods=['GET'])
+def list_all_capitals():
+    """list capitals"""
+
+    a_capital = capital.Capital()
+    results = a_capital.fetch()
+    return jsonify(results), 200
+
 @app.route('/api/capitals/<id>/store', methods=['POST']) 
 def store_capital(id):
     """store capitals"""
