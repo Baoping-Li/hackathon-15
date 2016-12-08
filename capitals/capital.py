@@ -35,7 +35,6 @@ class Capital:
 
         print key
         entity = datastore.Entity(key)
- 
         entity['name'] = capital['name']
         entity['countryCode'] = capital['countryCode']
         entity['country'] = capital['country']
@@ -74,8 +73,13 @@ class Capital:
 
 
     def publish(self, topic_name, capital_data):
-        pubsub_client = pubsub.Client()
-        topic = pubsub_client.topic(topic_name)
+        topic_items = topic_name.split('/')
+        project = topic_items[1]
+        print 'Project=' + project
+        topic_id = topic_items[3]
+        print 'Topic Name=' + topic_id
+        pubsub_client = pubsub.Client(project)
+        topic = pubsub_client.topic(topic_id)
         data = json.dumps(capital_data).encode('utf-8')
         message_id = topic.publish(data)
         print('Message {} published.'.format(message_id))
