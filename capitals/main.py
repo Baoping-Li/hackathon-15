@@ -41,11 +41,11 @@ def capital_operations(id):
     data = {}
     try:
       if request.method == 'PUT':
-        print json.dumps(request.get_json())
+        #print json.dumps(request.get_json())
 
         a_capital = capital.Capital()
 
-        print json.dumps(request.get_json()['id'])
+        #print json.dumps(request.get_json()['id'])
         a_capital.store(request.get_json(), id)
 
         return '', 200
@@ -104,16 +104,16 @@ def list_capitals():
 def store_capital(id):
     """store capitals"""
 
-    print json.dumps(request.get_json())
+    #print json.dumps(request.get_json())
     bucket = request.get_json()['bucket']
-    print bucket
+    #print bucket
     if not bucket:
         return '{ "code": 500, "message": "Bad request" }', 500
     a_capital = capital.Capital()
     capital_data = a_capital.get(id)
     if not capital_data:
         return '{ "code": 404, "message": "Capital not found" }', 404
-    print capital_data
+    #print capital_data
     a_capital.cloud_store(bucket, capital_data)
     return '', 200
 
@@ -122,14 +122,14 @@ def publish_capital(id):
     """publish capitals"""
     try:
         topic = request.get_json()['topic']
-        print topic
+        #print topic
         if not topic:
             return '{ "code": 500, "message": "Bad request" }', 500
         a_capital = capital.Capital()
         capital_data = a_capital.get(id)
         if not capital_data:
             return '{ "code": 404, "message": "Capital not found" }', 404
-        print capital_data
+        #print capital_data
         message_id = a_capital.publish(topic, capital_data)
         response = {"messageId" : int(message_id)}
         return jsonify(response), 200
