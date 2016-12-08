@@ -62,7 +62,11 @@ class Capital:
 
     def get_query_results(self, query):
         results = list()
+        i = 0;
         for entity in list(query.fetch()):
+            i += 1
+            if i > 20:
+               return results
             results.append(self.to_dto(entity))
         return results
 
