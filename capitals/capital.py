@@ -83,6 +83,7 @@ class Capital:
         data = json.dumps(capital_data).encode('utf-8')
         message_id = topic.publish(data)
         print('Message {} published.'.format(message_id))
+        return message_id
 
 def parse_note_time(note):
     """converts a greeting to an object"""

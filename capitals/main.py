@@ -85,6 +85,8 @@ def list_capitals():
         for capital_data in results:
             if search in json.dumps(capital_data):
                 found.append(capital_data)
+        #if len(found) == 0:
+            #return '{ "code": 404, "message": "Not found" }', 404
         return jsonify(found), 200
     elif query:
         found = []
@@ -92,6 +94,8 @@ def list_capitals():
         for capital_data in results:
             if capital_data[query_items[0]] == query_items[1]:
                 found.append(capital_data)
+        #if len(found) == 0:
+            #return '{ "code": 404, "message": "Not found" }', 404
         return jsonify(found), 200
 
     return jsonify(results), 200
@@ -126,8 +130,9 @@ def publish_capital(id):
         if not capital_data:
             return '{ "code": 404, "message": "Capital not found" }', 404
         print capital_data
-        a_capital.publish(topic, capital_data)
-        return '', 200
+        message_id = a_capital.publish(topic, capital_data)
+        response = {"messageId" : int(message_id)}
+        return jsonify(response), 200
     except Exception as e:
         # swallow up exceptions
         logging.exception('Oops!')
