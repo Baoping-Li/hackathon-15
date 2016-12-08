@@ -1,13 +1,18 @@
 from datetime import datetime
 from google.cloud import datastore
+from google.cloud import storage, exceptions
+from google.cloud.storage import Blob
+import json
 import utility
 
 
 class Capital:
 
     def __init__(self):
-        self.ds = datastore.Client(project=utility.project_id())
+        self.project_id = project=utility.project_id()
+        self.ds = datastore.Client(self.project_id)
         self.kind = "Capitals"
+        self.gcs = storage.Client(self.project_id)
 
     def to_dto(self, capital):
         json_capital = {}
@@ -41,7 +46,6 @@ class Capital:
 
     def fetch(self):
         query = self.ds.query(kind=self.kind)
-        #query.order = ['-timestamp']
         return self.get_query_results(query)
 
     def delete(self, capital_id):
@@ -56,12 +60,10 @@ class Capital:
         capital['id'] = capital_id
         return self.to_dto(capital)
 
-    def get_query_results(self, query):
-        results = list()
-        for entity in list(query.fetch()):
-            results.append(self.to_dto(entity))
-        return results
-
+    def cloud_store(self, bucket_name, capital_data):
+        bucket = self.gcs.get_bucket(bucket_name)
+        blob = Blob(capital_data['id'], bucket)
+        blob.upload_from_string(json.dumps(capital_data), content_type='application/json')
 
 def parse_note_time(note):
     """converts a greeting to an object"""

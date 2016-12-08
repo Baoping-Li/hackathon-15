@@ -28,6 +28,10 @@ def capital_status():
     status['fetch'] = True
     status['delete'] = True
     status['list'] = True
+    status['query'] = False
+    status['search'] = False
+    status['pubsub'] = False
+    status['storage'] = True
     return json.dumps(status)
 
 @app.route('/api/capitals/<id>', methods=['DELETE', 'PUT', 'GET' ])
@@ -75,6 +79,23 @@ def list_capitals():
     a_capital = capital.Capital()
     results = a_capital.fetch()
     return jsonify(results)
+
+@app.route('/api/capitals/<id>/store', methods=['POST']) 
+def store_capital(id):
+    """store capitals"""
+
+    print json.dumps(request.get_json())
+    bucket = request.get_json()['bucket']
+    print bucket
+    if not bucket:
+        return '{ "code": 500, "message": "Bad request" }', 500
+    a_capital = capital.Capital()
+    capital_data = a_capital.get(id)
+    if not capital_data:
+        return '{ "code": 404, "message": "Capital not found" }', 404
+    print capital_data
+    a_capital.cloud_store(bucket, capital_data)
+    return '', 200
 
 @app.errorhandler(500)
 def server_error(err):
