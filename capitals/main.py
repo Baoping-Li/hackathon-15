@@ -91,15 +91,9 @@ def list_capitals():
             #return '{ "code": 404, "message": "Not found" }', 404
         return jsonify(found), 200
     elif query:
-        results = a_capital.fetch()
-        found = []
         query_items = query.split(':')
-        for capital_data in results:
-            if capital_data[query_items[0]] == query_items[1]:
-                found.append(capital_data)
-        #if len(found) == 0:
-            #return '{ "code": 404, "message": "Not found" }', 404
-        return jsonify(found), 200
+        results = a_capital.fetch(20, query_items[0], query_items[1])
+        return jsonify(results), 200
 
     results = a_capital.fetch(20)
     return jsonify(results), 200

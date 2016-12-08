@@ -43,8 +43,10 @@ class Capital:
 
         return self.ds.put(entity)
 
-    def fetch(self, limit=None):
+    def fetch(self, limit=None, property=None, value=None):
         query = self.ds.query(kind=self.kind)
+        if property:
+            query.add_filter(property, "=", value)
         results = list()
         for entity in list(query.fetch(limit)):
             results.append(self.to_dto(entity))
