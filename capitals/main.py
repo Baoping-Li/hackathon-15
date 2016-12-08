@@ -4,7 +4,7 @@ import logging
 import json
 import base64
 
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask import jsonify
 
 import capital
@@ -13,12 +13,14 @@ import utility
 
 app = Flask(__name__)
 
-
 @app.route('/')
 def hello_world():
     """hello world"""
-    return 'Hello World!'
+    return send_from_directory('', 'index.html')
 
+@app.route('/<path:path>')
+def send_file(path):
+    return send_from_directory('', path)
 
 
 @app.route('/api/status', methods=['GET' ])

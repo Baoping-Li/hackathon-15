@@ -1,0 +1,50 @@
+<!doctype html>
+<html ng-app="capitalsApp">
+<head>
+<title>Capitals</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+<script src="query.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+	integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+	crossorigin="anonymous">
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="index.html">Blue Clouders</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="index.html">Home</a></li>
+				</ul>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</nav>
+
+	<div class="container" ng-controller="listController">
+		<!-- Main jumbotron for a primary marketing message or call to action -->
+		<div class="jumbotron">
+			<h1>List of capitals</h1>
+		</div>
+		<div>
+			<table class="table">
+				<tr>
+					<th>Country</th>
+					<th>Name</th>
+					<th>Map</th>
+				</tr>
+				<tr ng-repeat="capital in capitals">
+					<td>{{capital.country}}</td>
+					<td>{{capital.name}}</td>
+					<td><iframe width="200" height="200" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" ng-src="{{trustSrc(capital.mapurl)}}"></iframe></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</body>
+</html>
