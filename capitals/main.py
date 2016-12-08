@@ -79,10 +79,10 @@ def list_capitals():
     """list capitals"""
 
     a_capital = capital.Capital()
-    results = a_capital.fetch()
     search = request.args.get('search')
     query = request.args.get('query')
     if search:
+        results = a_capital.fetch()
         found = []
         for capital_data in results:
             if search in json.dumps(capital_data):
@@ -91,6 +91,7 @@ def list_capitals():
             #return '{ "code": 404, "message": "Not found" }', 404
         return jsonify(found), 200
     elif query:
+        results = a_capital.fetch()
         found = []
         query_items = query.split(':')
         for capital_data in results:
@@ -100,6 +101,7 @@ def list_capitals():
             #return '{ "code": 404, "message": "Not found" }', 404
         return jsonify(found), 200
 
+    results = a_capital.fetch(20)
     return jsonify(results), 200
 
 @app.route('/api/capitals/<id>/store', methods=['POST']) 

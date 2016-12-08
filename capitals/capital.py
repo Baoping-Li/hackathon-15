@@ -6,7 +6,6 @@ from google.cloud import pubsub
 import json
 import utility
 
-
 class Capital:
 
     def __init__(self):
@@ -44,9 +43,12 @@ class Capital:
 
         return self.ds.put(entity)
 
-    def fetch(self):
+    def fetch(self, limit=None):
         query = self.ds.query(kind=self.kind)
-        return self.get_query_results(query)
+        results = list()
+        for entity in list(query.fetch(limit)):
+            results.append(self.to_dto(entity))
+        return results
 
     def delete(self, capital_id):
         key = self.ds.key(self.kind, int(capital_id))
@@ -59,12 +61,6 @@ class Capital:
             return None
         capital['id'] = capital_id
         return self.to_dto(capital)
-
-    def get_query_results(self, query):
-        results = list()
-        for entity in list(query.fetch()):
-            results.append(self.to_dto(entity))
-        return results
 
     def cloud_store(self, bucket_name, capital_data):
         bucket = self.gcs.get_bucket(bucket_name)
