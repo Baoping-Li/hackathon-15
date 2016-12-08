@@ -29,11 +29,11 @@ class Capital:
 
     def store(self, capital, capital_id):
 
-        print capital
+        #print capital
         capital['id'] = int(capital_id)
         key = self.ds.key(self.kind, capital['id'])
 
-        print key
+        #print key
         entity = datastore.Entity(key)
         entity['name'] = capital['name']
         entity['countryCode'] = capital['countryCode']
@@ -62,7 +62,11 @@ class Capital:
 
     def get_query_results(self, query):
         results = list()
+        i = 0;
         for entity in list(query.fetch()):
+            i += 1
+            if i > 20:
+               return results
             results.append(self.to_dto(entity))
         return results
 
@@ -75,14 +79,14 @@ class Capital:
     def publish(self, topic_name, capital_data):
         topic_items = topic_name.split('/')
         project = topic_items[1]
-        print 'Project=' + project
+        #print 'Project=' + project
         topic_id = topic_items[3]
-        print 'Topic Name=' + topic_id
+        #print 'Topic Name=' + topic_id
         pubsub_client = pubsub.Client(project)
         topic = pubsub_client.topic(topic_id)
         data = json.dumps(capital_data).encode('utf-8')
         message_id = topic.publish(data)
-        print('Message {} published.'.format(message_id))
+        #print('Message {} published.'.format(message_id))
         return message_id
 
 def parse_note_time(note):
