@@ -1,0 +1,98 @@
+<html>
+  <head>
+	<title>Polymer Application</title>
+	<script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+	<link rel="import" href="bower_components/google-map/google-map.html">
+	<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+		crossorigin="anonymous">
+<style>
+
+table {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+</style>
+	</head>
+<body unresolved>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="index.html">Blue Clouders</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="index.html">Home</a></li>
+				</ul>
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="maps.html">Maps with Polymer</a></li>
+				</ul>
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="polymerapp.html">Polymer Application</a></li>
+				</ul>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</nav>
+<template is="dom-bind">
+
+    <iron-ajax
+            auto
+            url="https://capital-service-dot-hackathon-team-015.appspot.com/api/capitals/all"
+            last-response="{{capitals}}"
+            handleAs="json">
+    </iron-ajax>
+<div class="container-fluid">
+		<div>
+			<google-map id='googleMaps' map="{{map}}" latitude="0" longitude="0" zoom="2"
+			api-key="AIzaSyDJChuF9PhBZ6sTzYaYXZCEn3J41VFCpuk">
+				<template is="dom-repeat" items="{{capitals}}">
+					<google-map-marker map={{map}} title="{{item.name}} [{{item.country}}]" latitude="{{item.location.latitude}}" longitude="{{item.location.longitude}}">
+					</google-map-marker>
+				</template>				
+			</google-map>
+		</div>
+		<div >
+			<table class="table">
+				<tr>
+					<th style="width:50px">Country</th>
+					<th style="width:50px">Capital</th>
+				</tr>
+				<template  is="dom-repeat" items="{{capitals}}">
+					<tr>
+						<td style="width:50px">{{item.country}}</td>
+						<td style="width:50px">{{item.name}}</td>
+					</tr>
+				<template>
+			</table>
+		</div>
+	</div>
+</template>
+
+<script>
+    (function (document) {
+        'use strict';
+
+        var app = document.querySelector('#app');
+
+        window.addEventListener('WebComponentsReady', function() {
+            var ironAjax = document.querySelector('iron-ajax');
+            ironAjax.addEventListener('response', function() {
+                console.log(ironAjax.lastResponse[0].id);
+            });
+            ironAjax.generateRequest();
+        });
+
+    })(document);
+
+</script>
+		<div class="container">
+
+			</div>
+
+
+</body>
+
+</html>

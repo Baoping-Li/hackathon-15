@@ -103,7 +103,7 @@ def list_all_capitals():
     """list capitals"""
 
     a_capital = capital.Capital()
-    results = a_capital.fetch()
+    results = a_capital.fetch(None, None, None, True)
     return jsonify(results), 200
 
 @app.route('/api/capitals/<id>/store', methods=['POST']) 

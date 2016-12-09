@@ -1,13 +1,13 @@
 {
-  "name": "PolymerMapsCodelab",
-  "description": "",
-  "homepage": "",
-  "keywords": [],
-  "author": "",
-  "private": true,
+  "name": "polymer-test",
+  "version": "0.0.1",
+  "authors": [
+    "Vincent Agnano"
+  ],
+  "license": "MIT",
   "dependencies": {
-    "iron-elements": "PolymerElements/iron-elements#^1.0.0",
-    "paper-elements": "PolymerElements/paper-elements#^1.0.1",
-    "google-map": "GoogleWebComponents/google-map#^1.1.14"
+    "polymer": "Polymer/polymer#^1.0",
+    "google-map": "GoogleWebComponents/google-map#~1.0",
+    "iron-ajax": "PolymerElements/iron-ajax#^1.4.3"
   }
 }
