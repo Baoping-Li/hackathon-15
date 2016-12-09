@@ -2,14 +2,20 @@ angular
 .module('capitalsApp', [])
 .controller(
 		'listController',
-		function($scope, $sce, $http) {
+		function($scope, $sce, $http, $anchorScroll) {
 			var search = this;
 			$scope.capitals = []
+			$scope.listedCapitals = []
+			$scope.allCapitals = []
+			$scope.maxListed = 20
+			$scope.cursorPosition = 0
 			$scope.trustSrc = function(src) {
 			    return $sce.trustAsResourceUrl(src);
-			}
-			$scope.updateTable = function($name) {
-				var $url = "https://capital-service-dot-hackathon-team-015.appspot.com/api/capitals"
+			};
+
+			$scope.updateTable = function() {
+				var $url = "https://capital-service-dot-hackathon-team-015.appspot.com/api/capitals/all"
+				//var $url = "http://localhost:8080/api/capitals/all"
 				$http.get($url).then(function(response) {
 					var distinct = []
 					var array = response.data
@@ -29,9 +35,47 @@ angular
 							return 0;
 						});
 
-						$scope.capitals = distinctCountries
+						$scope.allCapitals = distinctCountries
+						$scope.updateView();
 				});
-			};
+			}
+			
+			$scope.updateView = function()
+			{
+				var $endPosition = $scope.cursorPosition + $scope.maxListed
+				if($endPosition >= $scope.allCapitals.length)
+				{
+					$endPosition = $scope.allCapitals.length - 1
+				}
+
+				$scope.capitals = $scope.allCapitals.slice($scope.cursorPosition, $endPosition)
+				$anchorScroll()
+			}
+
+			$scope.nextPage = function()
+			{
+				$scope.cursorPosition = $scope.cursorPosition + 20
+				if($scope.cursorPosition >= $scope.allCapitals.length)
+				{
+					$scope.cursorPosition = $scope.allCapitals.length - 1
+				}
+
+				$scope.updateView()
+			}
+
+			$scope.previousPage = function()
+			{
+				$scope.cursorPosition = $scope.cursorPosition - 20
+				if($scope.cursorPosition < 0)
+				{
+					$scope.cursorPosition = 0
+				}
+				
+				$scope.updateView()
+			}
+			
+
 			$scope.updateTable();
+			$scope.updateView();
 		});
 
