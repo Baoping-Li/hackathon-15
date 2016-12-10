@@ -28,11 +28,8 @@ class Capital:
 
     def store(self, capital, capital_id):
 
-        #print capital
         capital['id'] = int(capital_id)
         key = self.ds.key(self.kind, capital['id'])
-
-        #print key
         entity = datastore.Entity(key)
         entity['name'] = capital['name']
         entity['countryCode'] = capital['countryCode']
@@ -72,23 +69,15 @@ class Capital:
         blob = Blob(capital_data['id'], bucket)
         blob.upload_from_string(json.dumps(capital_data), content_type='application/json')
 
-
     def publish(self, topic_name, capital_data):
         topic_items = topic_name.split('/')
+        if len(query_items) != 2:
+            return None
+
         project = topic_items[1]
-        #print 'Project=' + project
         topic_id = topic_items[3]
-        #print 'Topic Name=' + topic_id
         pubsub_client = pubsub.Client(project)
         topic = pubsub_client.topic(topic_id)
         data = json.dumps(capital_data).encode('utf-8')
         message_id = topic.publish(data)
-        #print('Message {} published.'.format(message_id))
         return message_id
-
-def parse_note_time(note):
-    """converts a greeting to an object"""
-    return {
-        'text': note['text'],
-        'timestamp': note['timestamp'].strftime('%Y-%m-%d %H:%M:%S')
-    }

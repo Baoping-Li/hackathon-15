@@ -10,7 +10,6 @@ from flask import jsonify
 import capital
 import utility
 
-
 app = Flask(__name__)
 
 @app.route('/')
@@ -21,7 +20,6 @@ def hello_world():
 @app.route('/<path:path>')
 def send_file(path):
     return send_from_directory('', path)
-
 
 @app.route('/api/status', methods=['GET' ])
 def capital_status():
@@ -43,28 +41,21 @@ def capital_operations(id):
     data = {}
     try:
       if request.method == 'PUT':
-        #print json.dumps(request.get_json())
-
         a_capital = capital.Capital()
-
-        #print json.dumps(request.get_json()['id'])
         a_capital.store(request.get_json(), id)
-
         return '', 200
         
       elif request.method == 'DELETE':
         a_capital = capital.Capital()
         a_capital.delete(id)
-
         return '', 200
 
       elif request.method == "GET":    
-
         a_capital = capital.Capital()
         json_capital = a_capital.get(id)
-        
         if not json_capital:
           return '{ "code": 404, "message": "Capital not found" }', 404
+        
         return jsonify(json_capital), 200
 
     except Exception as e:
@@ -72,7 +63,6 @@ def capital_operations(id):
         logging.exception('Oops!')
 
     return "Unexpected error", 500
-
 
 @app.route('/api/capitals', methods=['GET'])
 def list_capitals():
@@ -87,11 +77,13 @@ def list_capitals():
         for capital_data in results:
             if search in json.dumps(capital_data):
                 found.append(capital_data)
-        #if len(found) == 0:
-            #return '{ "code": 404, "message": "Not found" }', 404
         return jsonify(found), 200
+    
     elif query:
         query_items = query.split(':')
+        if len(query_items) != 2:
+            return '{ "code": 500, "message": "Bad request" }', 500
+
         results = a_capital.fetch(20, query_items[0], query_items[1])
         return jsonify(results), 200
 
@@ -110,33 +102,36 @@ def list_all_capitals():
 def store_capital(id):
     """store capitals"""
 
-    #print json.dumps(request.get_json())
     bucket = request.get_json()['bucket']
-    #print bucket
     if not bucket:
         return '{ "code": 500, "message": "Bad request" }', 500
+
     a_capital = capital.Capital()
     capital_data = a_capital.get(id)
     if not capital_data:
         return '{ "code": 404, "message": "Capital not found" }', 404
-    #print capital_data
+
     a_capital.cloud_store(bucket, capital_data)
     return '', 200
 
 @app.route('/api/capitals/<id>/publish', methods=['POST']) 
 def publish_capital(id):
     """publish capitals"""
+    
     try:
         topic = request.get_json()['topic']
-        #print topic
         if not topic:
             return '{ "code": 500, "message": "Bad request" }', 500
+
         a_capital = capital.Capital()
         capital_data = a_capital.get(id)
         if not capital_data:
             return '{ "code": 404, "message": "Capital not found" }', 404
-        #print capital_data
+
         message_id = a_capital.publish(topic, capital_data)
+        if not message_id:
+            return '{ "code": 500, "message": "Bad request" }', 500
+
         response = {"messageId" : int(message_id)}
         return jsonify(response), 200
     except Exception as e:
@@ -154,7 +149,6 @@ def server_error(err):
     An internal error occurred: <pre>{}</pre>
     See logs for full stacktrace.
     """.format(err), 500
-
 
 if __name__ == '__main__':
     # Used for running locally
